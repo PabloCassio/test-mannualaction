@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: trstringer/manual-approval@v1.5.0
+      - uses: trstringer/manual-approval@v1.1.3
         with:
           secret: ${{ github.TOKEN }}
           approvers: pablocassio
