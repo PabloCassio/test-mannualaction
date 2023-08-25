@@ -11,14 +11,23 @@ jobs:
     steps:
       - name: Build
         run: echo building
+
+  manual-trigger-deploy:
+    runs-on: ubuntu-latest
+    outputs:
+      CONTINUE_JOBS: ${{ steps.manual-trigger.outputs.CONTINUE_JOBS }}
+    steps:
+      - name: manual-trigger
+        id: manual-trigger
+        uses: benhamiltonpro/manual-trigger@v1
+        with:
+          RUN_NAME: "build"
+  
   deploy:
     name: deploy
     runs-on: ubuntu-latest
-    needs: build
+    needs: manual-trigger-deploy
+    if: ${{ needs.manual-trigger-deploy.outputs.CONTINUE_JOBS == 'true' }}
     steps:
-      - uses: trstringer/manual-approval@v1.1.3
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: pablocassio
       - name: Deploy to production
         run: echo deploying
